@@ -1,0 +1,287 @@
+<!-- Start SEO and Social tags -->
+{% assign site_title = site.title %}
+
+{% if page.title %}
+  {% assign title = page.title | append:' | ' | append: site.title %}
+{% else %}
+  {% assign title = site.title %}
+{% endif %}
+
+{% if site.description %}
+  {% assign description = site.description %}
+{% endif %}
+
+{% if page.description != nil %}
+  {% assign description = page.description %}
+{% endif %}
+
+{% assign type = 'website' %}
+{% if layout.type %}
+  {% assign type = layout.type %}
+{% endif %}
+{% if page.type %}
+  {% assign type = page.type %}
+{% endif %}
+
+{% assign schema_type = 'WebPage' %}
+{% if page.url == "/" or page.url == "/home/" %}
+  {% assign schema_type = 'WebSite' %}
+{% endif %}
+{% if page.url == "/about/" or page.url == "/about-us/" %}
+  {% assign schema_type = 'AboutPage' %}
+{% endif %}
+{% if layout.schema_type %}
+  {% assign schema_type = layout.schema_type %}
+{% endif %}
+{% if page.schema_type %}
+  {% assign schema_type = page.schema_type %}
+{% endif %}
+
+{% assign logo = site.logo | absolute_url %}
+
+{% assign image = site.image | prepend: site.url %}
+{% if page.thumbnail %}
+  {% assign image = page.thumbnail | absolute_url %}
+{% endif %}
+{% if page.image %}
+  {% assign image = page.image | absolute_url %}
+{% endif %}
+{% if page.og_image %}
+  {% assign image = page.og_image | absolute_url %}
+{% endif %}
+
+{% assign twitter_image = image %}
+{% if page.image.twitter %}
+  {% assign twitter_image = page.image.twitter | absolute_url %}
+{% endif %}
+
+{% assign url = site.url %}
+{% if page.url %}
+  {% assign url = page.url | replace:'/index.html','/' | absolute_url %}
+{% endif %}
+
+{% if page.date %}
+  {% assign date = page.date | date_to_xmlschema %}
+{% endif %}
+
+{% if page.author %}
+  {% assign author = page.author.display_name %}
+{% endif %}
+
+{% if site_title %}
+  {% assign site_title = site_title | smartify | strip_html | normalize_whitespace | escape_once %}
+{% endif %}
+{% if title %}
+  {% assign title = title | smartify | strip_html | normalize_whitespace | escape_once %}
+{% endif %}
+{% if description %}
+  {% assign description = description | smartify | strip_html | normalize_whitespace | escape_once %}
+{% endif %}
+{% if type %}
+  {% assign type = type | smartify | strip_html | normalize_whitespace | escape_once %}
+{% endif %}
+{% if author %}
+  {% assign author = author | smartify | strip_html | normalize_whitespace | escape_once %}
+{% endif %}
+
+<!-------------------->
+
+{% if page.seo and page.seo.name %}
+    {% assign seo_name = page.seo.name %}
+{% elsif seo_homepage_or_about and site.social and site.social.name %}
+    {% assign seo_name = site.social.name %}
+{% elsif seo_homepage_or_about and seo_site_title %}
+    {% assign seo_name = seo_site_title %}
+{% endif %}
+
+
+{% assign seo_author = page.author | default: page.authors[0] | default: site.author %}
+{% if seo_author %}
+  {% if seo_author.twitter %}
+    {% assign seo_author_twitter = seo_author.twitter %}
+  {% else %}
+    {% if site.data.authors and site.data.authors[seo_author] %}
+      {% assign seo_author_twitter = site.data.authors[seo_author].twitter  %}
+    {% else %}
+      {% assign seo_author_twitter = seo_author  %}
+    {% endif %}
+  {% endif %}
+  {% assign seo_author_twitter = seo_author_twitter | replace:"@","" %}
+{% endif %}
+
+{% if page.seo and page.seo.type %}
+    {% assign seo_type = page.seo.type %}
+{% elsif seo_homepage_or_about %}
+    {% assign seo_type = "WebSite" %}
+{% elsif page.date %}
+    {% assign seo_type = "BlogPosting" %}
+{% else %}
+    {% assign seo_type = "WebPage" %}
+{% endif %}
+
+{% if page.seo and page.seo.links %}
+    {% assign seo_links = page.seo.links %}
+{% elsif seo_homepage_or_about and site.social and site.social.links %}
+    {% assign seo_links = site.social.links %}
+{% endif %}
+
+{% if site.logo %}
+  {% assign seo_site_logo = site.logo %}
+  {% unless seo_site_logo contains "://" %}
+    {% assign seo_site_logo = seo_site_logo | absolute_url %}
+  {% endunless %}
+  {% assign seo_site_logo = seo_site_logo | escape %}
+{% endif %}
+
+{% if page.image %}
+  {% assign seo_page_image = page.image.path | default: page.image.facebook | default: page.image %}
+  {% unless seo_page_image contains "://" %}
+    {% assign seo_page_image = seo_page_image | absolute_url %}
+  {% endunless %}
+  {% assign seo_page_image = seo_page_image | escape %}
+{% endif %}
+
+
+
+
+<!-- SEO data -->
+<title>{{ title }}</title>
+
+<meta name="description" content="{{ description }}" />
+<link rel="canonical" href="{{ url }}" />
+
+<!-- Twitter Card data -->
+<meta name="twitter:card" value="{{ description }}" />
+<meta name="twitter:image" content="{{ twitter_image }}" />
+
+<!-- Open Graph data -->
+<meta property="og:locale"                content="en_US" />
+<meta property="og:type"                  content="{{ type }}" />
+<meta property="og:site_name"             content="{{ site_title }}" />
+<meta property="og:title"                 content="{{ title }}" />
+<meta property="og:description"           content="{{ description }}" />
+<meta property="og:url"                   content="{{ url }}" />
+<meta property="og:image"                 content="{{ image }}" />
+
+{% if page.image.height %}
+  <meta property="og:image:height" content="{{ page.image.height }}" />
+{% endif %}
+{% if page.image.width %}
+  <meta property="og:image:width" content="{{ page.image.width }}" />
+{% endif %}
+
+
+{% if type == 'article' %}
+
+  {% if page.date %}
+    <meta property="article:published_time"   content="{{ date }}">
+  {% endif %}
+
+  {% if page.author %}
+    <meta property="article:author"           content="{{ author }}">
+  {% endif %}
+
+  {% if page.categories %}
+    {% for category in page.categories %}
+    <meta property="article:tag" content="{{ category }}">
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+
+
+
+
+
+
+
+
+{% if paginator.previous_page %}
+  <link rel="prev" href="{{ paginator.previous_page_path | absolute_url }}">
+{% endif %}
+{% if paginator.next_page %}
+  <link rel="next" href="{{ paginator.next_page_path | absolute_url }}">
+{% endif %}
+
+{% if site.twitter %}
+  {% if seo_page_image or page.image.twitter %}
+    <meta name="twitter:card" content="summary_large_image" />
+  {% else %}
+    <meta name="twitter:card" content="summary" />
+  {% endif %}
+
+  <meta name="twitter:site" content="@{{ site.twitter.username | replace:"@","" }}" />
+
+  {% if seo_author_twitter %}
+    <meta name="twitter:creator" content="@{{ seo_author_twitter }}" />
+  {% endif %}
+{% endif %}
+
+{% if site.facebook %}
+  {% if site.facebook.admins %}
+    <meta property="fb:admins" content="{{ site.facebook.admins }}" />
+  {% endif %}
+
+  {% if site.facebook.publisher %}
+    <meta property="article:publisher" content="{{ site.facebook.publisher }}" />
+  {% endif %}
+
+  {% if site.facebook.app_id %}
+    <meta property="fb:app_id" content="{{ site.facebook.app_id }}" />
+  {% endif %}
+{% endif %}
+
+{% if site.webmaster_verifications %}
+  {% if site.webmaster_verifications.google %}
+    <meta name="google-site-verification" content="{{ site.webmaster_verifications.google }}">
+  {% endif %}
+  {% if site.webmaster_verifications.bing %}
+    <meta name="msvalidate.01" content="{{ site.webmaster_verifications.bing }}">
+  {% endif %}
+  {% if site.webmaster_verifications.alexa %}
+    <meta name="alexaVerifyID" content="{{ site.webmaster_verifications.alexa }}">
+  {% endif %}
+  {% if site.webmaster_verifications.yandex %}
+    <meta name="yandex-verification" content="{{ site.webmaster_verifications.yandex }}">
+  {% endif %}
+{% elsif site.google_site_verification %}
+  <meta name="google-site-verification" content="{{ site.google_site_verification }}" />
+{% endif %}
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": {{ schema_type | jsonify }},
+    "url": {{ url | jsonify }},
+    "name": {{ title | jsonify }},
+    "description": {{ description | jsonify }},
+    "image": {{ image | jsonify }},
+
+{% if seo_page_title %}
+    "headline": {{ seo_page_title | jsonify }},
+{% endif %}
+
+{% if page.date %}
+    "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
+{% endif %}
+
+{% if logo %}
+    "publisher": {
+        "@type": "Organization",
+        "logo": {
+            "@type": "ImageObject",
+            "url": {{ logo | jsonify }}
+        }
+    },
+{% endif %}
+
+{% if seo_links %}
+    "sameAs": {{ seo_links | jsonify }},
+{% endif %}
+
+
+  }
+</script>
+
+<!-- End SEO and Social tags -->
