@@ -256,28 +256,28 @@
     "url": {{ url | jsonify }},
     "name": {{ title | jsonify }},
     "description": {{ description | jsonify }},
-    "image": {{ image | jsonify }},
+    "image": {{ image | jsonify }}
 
 {% if seo_page_title %}
-    "headline": {{ seo_page_title | jsonify }},
+    ,"headline": {{ seo_page_title | jsonify }}
 {% endif %}
 
 {% if page.date %}
-    "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
+    ,"datePublished": {{ page.date | date_to_xmlschema | jsonify }}
 {% endif %}
 
 {% if logo %}
-    "publisher": {
+    ,"publisher": {
         "@type": "Organization",
         "logo": {
             "@type": "ImageObject",
             "url": {{ logo | jsonify }}
         }
-    },
+    }
 {% endif %}
 
 {% if seo_links %}
-    "sameAs": {{ seo_links | jsonify }},
+    ,"sameAs": {{ seo_links | jsonify }}
 {% endif %}
 
 
