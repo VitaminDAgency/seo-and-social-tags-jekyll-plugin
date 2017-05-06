@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.name         = 'seo-and-social-tags'
-  spec.version      = '0.1.0'
-  spec.date         = '2017-02-28'
+  spec.version      = '0.1.1'
+  spec.date         = '2017-05-03'
   spec.summary      = "A Jekyll plugin to add metadata tags for search engines and social networks to better index and display your site's content."
   spec.description  = "A Jekyll plugin to add metadata tags for search engines and social networks to better index and display your site's content."
   spec.authors      = ["Kory Calmes"]
